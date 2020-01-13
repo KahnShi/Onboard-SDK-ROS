@@ -71,12 +71,12 @@
 #include <dji_sdk/SendMobileData.h>
 #include <dji_sdk/SendPayloadData.h>
 #include <dji_sdk/QueryDroneVersion.h>
-#ifdef ADVANCED_SENSING
-#include <dji_sdk/Stereo240pSubscription.h>
-#include <dji_sdk/StereoDepthSubscription.h>
-#include <dji_sdk/StereoVGASubscription.h>
-#include <dji_sdk/SetupCameraStream.h>
-#endif
+// #ifdef ADVANCED_SENSING
+// #include <dji_sdk/Stereo240pSubscription.h>
+// #include <dji_sdk/StereoDepthSubscription.h>
+// #include <dji_sdk/StereoVGASubscription.h>
+// #include <dji_sdk/SetupCameraStream.h>
+// #endif
 
 //! SDK library
 #include <djiosdk/dji_vehicle.hpp>
@@ -217,17 +217,17 @@ private:
   bool setHardsyncCallback(dji_sdk::SetHardSync::Request&  request,
                            dji_sdk::SetHardSync::Response& response);
 
-#ifdef ADVANCED_SENSING
-  //! stereo image service callback
-  bool stereo240pSubscriptionCallback(dji_sdk::Stereo240pSubscription::Request&  request,
-                                      dji_sdk::Stereo240pSubscription::Response& response);
-  bool stereoDepthSubscriptionCallback(dji_sdk::StereoDepthSubscription::Request&  request,
-                                       dji_sdk::StereoDepthSubscription::Response& response);
-  bool stereoVGASubscriptionCallback(dji_sdk::StereoVGASubscription::Request&  request,
-                                     dji_sdk::StereoVGASubscription::Response& response);
-  bool setupCameraStreamCallback(dji_sdk::SetupCameraStream::Request&  request,
-                                 dji_sdk::SetupCameraStream::Response& response);
-#endif
+// #ifdef ADVANCED_SENSING
+//   //! stereo image service callback
+//   bool stereo240pSubscriptionCallback(dji_sdk::Stereo240pSubscription::Request&  request,
+//                                       dji_sdk::Stereo240pSubscription::Response& response);
+//   bool stereoDepthSubscriptionCallback(dji_sdk::StereoDepthSubscription::Request&  request,
+//                                        dji_sdk::StereoDepthSubscription::Response& response);
+//   bool stereoVGASubscriptionCallback(dji_sdk::StereoVGASubscription::Request&  request,
+//                                      dji_sdk::StereoVGASubscription::Response& response);
+//   bool setupCameraStreamCallback(dji_sdk::SetupCameraStream::Request&  request,
+//                                  dji_sdk::SetupCameraStream::Response& response);
+// #endif
 
   //! data broadcast callback
   void dataBroadcastCallback();
@@ -280,19 +280,19 @@ private:
                                RecvContainer       recvFrame,
                                DJI::OSDK::UserData userData);
 
-#ifdef ADVANCED_SENSING
-  static void publish240pStereoImage(Vehicle*            vehicle,
-                                     RecvContainer       recvFrame,
-                                     DJI::OSDK::UserData userData);
+// #ifdef ADVANCED_SENSING
+//   static void publish240pStereoImage(Vehicle*            vehicle,
+//                                      RecvContainer       recvFrame,
+//                                      DJI::OSDK::UserData userData);
 
-  static void publishVGAStereoImage(Vehicle*            vehicle,
-                                    RecvContainer       recvFrame,
-                                    DJI::OSDK::UserData userData);
+//   static void publishVGAStereoImage(Vehicle*            vehicle,
+//                                     RecvContainer       recvFrame,
+//                                     DJI::OSDK::UserData userData);
 
-  static void publishMainCameraImage(CameraRGBImage img, void* userData);
+//   static void publishMainCameraImage(CameraRGBImage img, void* userData);
 
-  static void publishFPVCameraImage(CameraRGBImage img, void* userData);
-#endif
+//   static void publishFPVCameraImage(CameraRGBImage img, void* userData);
+// #endif
 
 private:
   //! OSDK core
@@ -334,13 +334,13 @@ private:
   //! Set Local position reference
   ros::ServiceServer local_pos_ref_server;
 
-#ifdef ADVANCED_SENSING
-  //! stereo image service
-  ros::ServiceServer subscribe_stereo_240p_server;
-  ros::ServiceServer subscribe_stereo_depth_server;
-  ros::ServiceServer subscribe_stereo_vga_server;
-  ros::ServiceServer camera_stream_server;
-#endif
+// #ifdef ADVANCED_SENSING
+//   //! stereo image service
+//   ros::ServiceServer subscribe_stereo_240p_server;
+//   ros::ServiceServer subscribe_stereo_depth_server;
+//   ros::ServiceServer subscribe_stereo_vga_server;
+//   ros::ServiceServer camera_stream_server;
+// #endif
 
   //! flight control subscribers
   ros::Subscriber flight_control_sub;
@@ -386,17 +386,17 @@ private:
   ros::Publisher time_sync_fc_utc_publisher;
   ros::Publisher time_sync_pps_source_publisher;
 
-#ifdef ADVANCED_SENSING
-  ros::Publisher stereo_240p_front_left_publisher;
-  ros::Publisher stereo_240p_front_right_publisher;
-  ros::Publisher stereo_240p_down_front_publisher;
-  ros::Publisher stereo_240p_down_back_publisher;
-  ros::Publisher stereo_240p_front_depth_publisher;
-  ros::Publisher stereo_vga_front_left_publisher;
-  ros::Publisher stereo_vga_front_right_publisher;
-  ros::Publisher main_camera_stream_publisher;
-  ros::Publisher fpv_camera_stream_publisher;
-#endif
+// #ifdef ADVANCED_SENSING
+//   ros::Publisher stereo_240p_front_left_publisher;
+//   ros::Publisher stereo_240p_front_right_publisher;
+//   ros::Publisher stereo_240p_down_front_publisher;
+//   ros::Publisher stereo_240p_down_back_publisher;
+//   ros::Publisher stereo_240p_front_depth_publisher;
+//   ros::Publisher stereo_vga_front_left_publisher;
+//   ros::Publisher stereo_vga_front_right_publisher;
+//   ros::Publisher main_camera_stream_publisher;
+//   ros::Publisher fpv_camera_stream_publisher;
+// #endif
   //! constant
   const int WAIT_TIMEOUT           = 10;
   const int MAX_SUBSCRIBE_PACKAGES = 5;

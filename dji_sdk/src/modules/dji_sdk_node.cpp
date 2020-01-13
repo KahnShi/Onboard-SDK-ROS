@@ -88,10 +88,10 @@ DJISDKNode::initVehicle(ros::NodeHandle& nh_private)
   bool threadSupport = true;
   bool enable_advanced_sensing = false;
 
-#ifdef ADVANCED_SENSING
-  enable_advanced_sensing = true;
-  ROS_INFO("Advanced Sensing is Enabled on M210.");
-#endif
+// #ifdef ADVANCED_SENSING
+//   enable_advanced_sensing = true;
+//   ROS_INFO("Advanced Sensing is Enabled on M210.");
+// #endif
 
   //! @note currently does not work without thread support
   vehicle = new Vehicle(serial_device.c_str(), baud_rate, threadSupport, enable_advanced_sensing);
@@ -124,9 +124,9 @@ DJISDKNode::initVehicle(ros::NodeHandle& nh_private)
     telemetry_from_fc = USE_SUBSCRIBE;
   }
 
-#ifdef ADVANCED_SENSING
-  vehicle->advancedSensing->setAcmDevicePath(acm_device.c_str());
-#endif
+// #ifdef ADVANCED_SENSING
+//   vehicle->advancedSensing->setAcmDevicePath(acm_device.c_str());
+// #endif
 
   return true;
 }
@@ -155,12 +155,12 @@ bool DJISDKNode::initServices(ros::NodeHandle& nh) {
   send_to_payload_server    = nh.advertiseService("dji_sdk/send_data_to_payload",           &DJISDKNode::sendToPayloadCallback,          this);
   query_version_server      = nh.advertiseService("dji_sdk/query_drone_version",            &DJISDKNode::queryVersionCallback,           this);
   local_pos_ref_server      = nh.advertiseService("dji_sdk/set_local_pos_ref",              &DJISDKNode::setLocalPosRefCallback,         this);
-#ifdef ADVANCED_SENSING
-  subscribe_stereo_240p_server  = nh.advertiseService("dji_sdk/stereo_240p_subscription",   &DJISDKNode::stereo240pSubscriptionCallback, this);
-  subscribe_stereo_depth_server = nh.advertiseService("dji_sdk/stereo_depth_subscription",  &DJISDKNode::stereoDepthSubscriptionCallback,this);
-  subscribe_stereo_vga_server   = nh.advertiseService("dji_sdk/stereo_vga_subscription",    &DJISDKNode::stereoVGASubscriptionCallback,  this);
-  camera_stream_server          = nh.advertiseService("dji_sdk/setup_camera_stream",        &DJISDKNode::setupCameraStreamCallback,      this);
-#endif
+// #ifdef ADVANCED_SENSING
+//   subscribe_stereo_240p_server  = nh.advertiseService("dji_sdk/stereo_240p_subscription",   &DJISDKNode::stereo240pSubscriptionCallback, this);
+//   subscribe_stereo_depth_server = nh.advertiseService("dji_sdk/stereo_depth_subscription",  &DJISDKNode::stereoDepthSubscriptionCallback,this);
+//   subscribe_stereo_vga_server   = nh.advertiseService("dji_sdk/stereo_vga_subscription",    &DJISDKNode::stereoVGASubscriptionCallback,  this);
+//   camera_stream_server          = nh.advertiseService("dji_sdk/setup_camera_stream",        &DJISDKNode::setupCameraStreamCallback,      this);
+// #endif
 
   // A3/N3 only
   if(!isM100())
@@ -314,34 +314,34 @@ DJISDKNode::initPublisher(ros::NodeHandle& nh)
   time_sync_pps_source_publisher =
       nh.advertise<std_msgs::String>("dji_sdk/time_sync_pps_source", 10);
 
-#ifdef ADVANCED_SENSING
-  stereo_240p_front_left_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_240p_front_left_images", 10);
+// #ifdef ADVANCED_SENSING
+//   stereo_240p_front_left_publisher =
+//     nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_240p_front_left_images", 10);
 
-  stereo_240p_front_right_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_240p_front_right_images", 10);
+//   stereo_240p_front_right_publisher =
+//     nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_240p_front_right_images", 10);
 
-  stereo_240p_down_front_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_240p_down_front_images", 10);
+//   stereo_240p_down_front_publisher =
+//     nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_240p_down_front_images", 10);
 
-  stereo_240p_down_back_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_240p_down_back_images", 10);
+//   stereo_240p_down_back_publisher =
+//     nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_240p_down_back_images", 10);
 
-  stereo_240p_front_depth_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_240p_front_depth_images", 10);
+//   stereo_240p_front_depth_publisher =
+//     nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_240p_front_depth_images", 10);
 
-  stereo_vga_front_left_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_vga_front_left_images", 10);
+//   stereo_vga_front_left_publisher =
+//     nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_vga_front_left_images", 10);
 
-  stereo_vga_front_right_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_vga_front_right_images", 10);
+//   stereo_vga_front_right_publisher =
+//     nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_vga_front_right_images", 10);
 
-  main_camera_stream_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/main_camera_images", 10);
+//   main_camera_stream_publisher =
+//     nh.advertise<sensor_msgs::Image>("dji_sdk/main_camera_images", 10);
 
-  fpv_camera_stream_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/fpv_camera_images", 10);
-#endif
+//   fpv_camera_stream_publisher =
+//     nh.advertise<sensor_msgs::Image>("dji_sdk/fpv_camera_images", 10);
+// #endif
 
 
 

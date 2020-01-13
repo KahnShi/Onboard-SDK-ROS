@@ -306,171 +306,171 @@ bool DJISDKNode::queryVersionCallback(dji_sdk::QueryDroneVersion::Request& reque
   return true;
 }
 
-#ifdef ADVANCED_SENSING
-bool
-DJISDKNode::stereo240pSubscriptionCallback(dji_sdk::Stereo240pSubscription::Request&  request,
-                                           dji_sdk::Stereo240pSubscription::Response& response)
-{
-  ROS_DEBUG("called stereo240pSubscriptionCallback");
+// #ifdef ADVANCED_SENSING
+// bool
+// DJISDKNode::stereo240pSubscriptionCallback(dji_sdk::Stereo240pSubscription::Request&  request,
+//                                            dji_sdk::Stereo240pSubscription::Response& response)
+// {
+//   ROS_DEBUG("called stereo240pSubscriptionCallback");
 
-  if (request.unsubscribe_240p == 1)
-  {
-    vehicle->advancedSensing->unsubscribeStereoImages();
-    response.result = true;
-    ROS_INFO("unsubscribe stereo 240p images");
-    return true;
-  }
+//   if (request.unsubscribe_240p == 1)
+//   {
+//     vehicle->advancedSensing->unsubscribeStereoImages();
+//     response.result = true;
+//     ROS_INFO("unsubscribe stereo 240p images");
+//     return true;
+//   }
 
-  AdvancedSensing::ImageSelection image_select;
-  memset(&image_select, 0, sizeof(AdvancedSensing::ImageSelection));
+//   AdvancedSensing::ImageSelection image_select;
+//   memset(&image_select, 0, sizeof(AdvancedSensing::ImageSelection));
 
-  if (request.front_right_240p == 1)
-    image_select.front_right = 1;
+//   if (request.front_right_240p == 1)
+//     image_select.front_right = 1;
 
-  if (request.front_left_240p == 1)
-    image_select.front_left = 1;
+//   if (request.front_left_240p == 1)
+//     image_select.front_left = 1;
 
-  if (request.down_front_240p == 1)
-    image_select.down_front = 1;
+//   if (request.down_front_240p == 1)
+//     image_select.down_front = 1;
 
-  if (request.down_back_240p == 1)
-    image_select.down_back = 1;
+//   if (request.down_back_240p == 1)
+//     image_select.down_back = 1;
 
-  this->stereo_subscription_success = false;
-  vehicle->advancedSensing->subscribeStereoImages(&image_select, &publish240pStereoImage, this);
+//   this->stereo_subscription_success = false;
+//   vehicle->advancedSensing->subscribeStereoImages(&image_select, &publish240pStereoImage, this);
 
-  ros::Duration(1).sleep();
+//   ros::Duration(1).sleep();
 
-  if (this->stereo_subscription_success == true)
-  {
-    response.result = true;
-  }
-  else
-  {
-    response.result = false;
-    ROS_WARN("Stereo 240p subscription service failed, please check your request content.");
-  }
+//   if (this->stereo_subscription_success == true)
+//   {
+//     response.result = true;
+//   }
+//   else
+//   {
+//     response.result = false;
+//     ROS_WARN("Stereo 240p subscription service failed, please check your request content.");
+//   }
 
-  return true;
-}
+//   return true;
+// }
 
-bool
-DJISDKNode::stereoDepthSubscriptionCallback(dji_sdk::StereoDepthSubscription::Request&  request,
-                                            dji_sdk::StereoDepthSubscription::Response& response)
-{
-  ROS_DEBUG("called stereoDepthSubscriptionCallback");
+// bool
+// DJISDKNode::stereoDepthSubscriptionCallback(dji_sdk::StereoDepthSubscription::Request&  request,
+//                                             dji_sdk::StereoDepthSubscription::Response& response)
+// {
+//   ROS_DEBUG("called stereoDepthSubscriptionCallback");
 
-  if (request.unsubscribe_240p == 1)
-  {
-    vehicle->advancedSensing->unsubscribeStereoImages();
-    response.result = true;
-    ROS_INFO("unsubscribe stereo 240p images");
-    return true;
-  }
+//   if (request.unsubscribe_240p == 1)
+//   {
+//     vehicle->advancedSensing->unsubscribeStereoImages();
+//     response.result = true;
+//     ROS_INFO("unsubscribe stereo 240p images");
+//     return true;
+//   }
 
-  if (request.front_depth_240p == 1)
-  {
-    this->stereo_subscription_success = false;
-    vehicle->advancedSensing->subscribeFrontStereoDisparity(&publish240pStereoImage, this);
-  }
-  else
-  {
-    ROS_WARN("no depth image is subscribed");
-    return true;
-  }
+//   if (request.front_depth_240p == 1)
+//   {
+//     this->stereo_subscription_success = false;
+//     vehicle->advancedSensing->subscribeFrontStereoDisparity(&publish240pStereoImage, this);
+//   }
+//   else
+//   {
+//     ROS_WARN("no depth image is subscribed");
+//     return true;
+//   }
 
-  ros::Duration(1).sleep();
+//   ros::Duration(1).sleep();
 
-  if (this->stereo_subscription_success == true)
-  {
-    response.result = true;
-  }
-  else
-  {
-    response.result = false;
-    ROS_WARN("Stereo 240p subscription service failed, please check your request content.");
-  }
+//   if (this->stereo_subscription_success == true)
+//   {
+//     response.result = true;
+//   }
+//   else
+//   {
+//     response.result = false;
+//     ROS_WARN("Stereo 240p subscription service failed, please check your request content.");
+//   }
 
-  return true;
-}
+//   return true;
+// }
 
-bool
-DJISDKNode::stereoVGASubscriptionCallback(dji_sdk::StereoVGASubscription::Request&  request,
-                                          dji_sdk::StereoVGASubscription::Response& response)
-{
-  ROS_DEBUG("called stereoVGASubscriptionCallback");
+// bool
+// DJISDKNode::stereoVGASubscriptionCallback(dji_sdk::StereoVGASubscription::Request&  request,
+//                                           dji_sdk::StereoVGASubscription::Response& response)
+// {
+//   ROS_DEBUG("called stereoVGASubscriptionCallback");
 
-  if (request.unsubscribe_vga == 1)
-  {
-    vehicle->advancedSensing->unsubscribeVGAImages();
-    response.result = true;
-    ROS_INFO("unsubscribe stereo vga images");
-    return true;
-  }
+//   if (request.unsubscribe_vga == 1)
+//   {
+//     vehicle->advancedSensing->unsubscribeVGAImages();
+//     response.result = true;
+//     ROS_INFO("unsubscribe stereo vga images");
+//     return true;
+//   }
 
-  if (request.vga_freq != request.VGA_20_HZ
-      && request.vga_freq != request.VGA_10_HZ)
-  {
-    ROS_ERROR("VGA subscription frequency is wrong");
-    response.result = false;
-    return true;
-  }
+//   if (request.vga_freq != request.VGA_20_HZ
+//       && request.vga_freq != request.VGA_10_HZ)
+//   {
+//     ROS_ERROR("VGA subscription frequency is wrong");
+//     response.result = false;
+//     return true;
+//   }
 
-  if (request.front_vga == 1)
-  {
-    this->stereo_vga_subscription_success = false;
-    vehicle->advancedSensing->subscribeFrontStereoVGA(request.vga_freq, &publishVGAStereoImage, this);
-    ros::Duration(1).sleep();
-  }
+//   if (request.front_vga == 1)
+//   {
+//     this->stereo_vga_subscription_success = false;
+//     vehicle->advancedSensing->subscribeFrontStereoVGA(request.vga_freq, &publishVGAStereoImage, this);
+//     ros::Duration(1).sleep();
+//   }
 
-  if (this->stereo_vga_subscription_success == true)
-  {
-    response.result = true;
-  }
-  else
-  {
-    response.result = false;
-    ROS_WARN("Stereo VGA subscription service failed, please check your request content.");
-  }
+//   if (this->stereo_vga_subscription_success == true)
+//   {
+//     response.result = true;
+//   }
+//   else
+//   {
+//     response.result = false;
+//     ROS_WARN("Stereo VGA subscription service failed, please check your request content.");
+//   }
 
-  return true;
-}
+//   return true;
+// }
 
 
-bool
-DJISDKNode::setupCameraStreamCallback(dji_sdk::SetupCameraStream::Request&  request,
-                                      dji_sdk::SetupCameraStream::Response& response)
-{
-  ROS_DEBUG("called cameraStreamCallback");
-  bool result = false;
+// bool
+// DJISDKNode::setupCameraStreamCallback(dji_sdk::SetupCameraStream::Request&  request,
+//                                       dji_sdk::SetupCameraStream::Response& response)
+// {
+//   ROS_DEBUG("called cameraStreamCallback");
+//   bool result = false;
 
-  if(request.cameraType == request.FPV_CAM)
-  {
-    if(request.start == 1)
-    {
-      result = vehicle->advancedSensing->startFPVCameraStream(&publishFPVCameraImage, this);
-    }
-    else
-    {
-      vehicle->advancedSensing->stopFPVCameraStream();
-      result = true;
-    }
-  }
-  else if(request.cameraType == request.MAIN_CAM)
-  {
-    if(request.start == 1)
-    {
-      result = vehicle->advancedSensing->startMainCameraStream(&publishMainCameraImage, this);
-    }
-    else
-    {
-      vehicle->advancedSensing->stopMainCameraStream();
-      result = true;
-    }
-  }
+//   if(request.cameraType == request.FPV_CAM)
+//   {
+//     if(request.start == 1)
+//     {
+//       result = vehicle->advancedSensing->startFPVCameraStream(&publishFPVCameraImage, this);
+//     }
+//     else
+//     {
+//       vehicle->advancedSensing->stopFPVCameraStream();
+//       result = true;
+//     }
+//   }
+//   else if(request.cameraType == request.MAIN_CAM)
+//   {
+//     if(request.start == 1)
+//     {
+//       result = vehicle->advancedSensing->startMainCameraStream(&publishMainCameraImage, this);
+//     }
+//     else
+//     {
+//       vehicle->advancedSensing->stopMainCameraStream();
+//       result = true;
+//     }
+//   }
 
-  response.result = result;
-  return true;
-}
+//   response.result = result;
+//   return true;
+// }
 
-#endif // ADVANCED_SENSING
+// #endif // ADVANCED_SENSING
