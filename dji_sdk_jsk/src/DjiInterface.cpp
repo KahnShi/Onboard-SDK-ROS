@@ -43,29 +43,47 @@ namespace dji_interface{
     nhp_ = nhp;
 
     flight_status_ = 255;
+    current_local_position_update_ = false;
 
-    gps_position_sub_ = nh_.subscribe("dji_sdk/gps_position", 10, &DjiInterface::gpsPositionCallback, this, ros::TransportHints().tcpNoDelay());
-    gps_health_sub_ = nh_.subscribe("dji_sdk/gps_health", 10, &DjiInterface::gpsHealthCallback, this, ros::TransportHints().tcpNoDelay());
-    flight_status_sub_ = nh_.subscribe("dji_sdk/flight_status", 10, &DjiInterface::flightStatusCallback, this, ros::TransportHints().tcpNoDelay());
-    local_position_sub_ = nh_.subscribe("dji_sdk/local_position", 10, &DjiInterface::localPositionCallback, this, ros::TransportHints().tcpNoDelay());
+    gps_position_sub_ = nh_.subscribe("/dji_sdk/gps_position", 10, &DjiInterface::gpsPositionCallback, this, ros::TransportHints().tcpNoDelay());
+    gps_health_sub_ = nh_.subscribe("/dji_sdk/gps_health", 10, &DjiInterface::gpsHealthCallback, this, ros::TransportHints().tcpNoDelay());
+    flight_status_sub_ = nh_.subscribe("/dji_sdk/flight_status", 10, &DjiInterface::flightStatusCallback, this, ros::TransportHints().tcpNoDelay());
+    local_position_sub_ = nh_.subscribe("/dji_sdk/local_position", 10, &DjiInterface::localPositionCallback, this, ros::TransportHints().tcpNoDelay());
+    attitude_sub_ = nh_.subscribe("/dji_sdk/attitude", 10, &DjiInterface::attitudeCallback, this, ros::TransportHints().tcpNoDelay());
 
-    sdk_ctrl_authority_srv_ = nh.serviceClient<dji_sdk::SDKControlAuthority> ("dji_sdk/sdk_control_authority");
-    set_local_pos_reference_srv_ = nh.serviceClient<dji_sdk::SetLocalPosRef> ("dji_sdk/set_local_pos_ref");
-    query_version_srv_ = nh_.serviceClient<dji_sdk::QueryDroneVersion>("dji_sdk/query_drone_version");
-    drone_task_srv_ = nh_.serviceClient<dji_sdk::DroneTaskControl>("dji_sdk/drone_task_control");
+    flight_control_pub_ = nh_.advertise<sensor_msgs::Joy>("/dji_sdk/flight_control_setpoint_generic", 10);
+
+    sdk_ctrl_authority_srv_ = nh.serviceClient<dji_sdk::SDKControlAuthority> ("/dji_sdk/sdk_control_authority");
+    set_local_pos_reference_srv_ = nh.serviceClient<dji_sdk::SetLocalPosRef> ("/dji_sdk/set_local_pos_ref");
+    query_version_srv_ = nh_.serviceClient<dji_sdk::QueryDroneVersion>("/dji_sdk/query_drone_version");
+    drone_task_srv_ = nh_.serviceClient<dji_sdk::DroneTaskControl>("/dji_sdk/drone_task_control");
 
     ROS_INFO("DJI init finished.");
+    ros::Time start_time = ros::Time::now();
+    while (ros::Time::now() - start_time < ros::Duration(0.5)){
+      ros::Duration(0.01).sleep();
+      ros::spinOnce();
+    }
   }
 
   bool DjiInterface::connectM100(){
     ROS_INFO("Start to connect M100.");
     if (!obtainControl())
       return false;
-    sleep(0.1);
-    if (!setLocalPosition()){
-      ROS_ERROR("GPS health insufficient - No local frame reference for height. Exiting.");
-      return false;
+    ros::Time start_time = ros::Time::now();
+    while (ros::Time::now() - start_time < ros::Duration(0.1)){
+      ros::Duration(0.01).sleep();
+      ros::spinOnce();
     }
+    if (!current_local_position_update_){
+      ROS_INFO("Local position need to be intialized");
+      if (!setLocalPosition()){
+        ROS_ERROR("GPS health insufficient - No local frame reference for height. Exiting.");
+        return false;
+      }
+    }
+    else
+      ROS_INFO("Local position no need intialization");
     if(!isM100()){
       ROS_ERROR("DRONE is not M100!");
       return false;
@@ -108,6 +126,21 @@ namespace dji_interface{
     return true;
   }
 
+  void DjiInterface::velocityControl(double vel_x, double vel_y, double vel_z, double vel_yaw){
+    sensor_msgs::Joy controlVelYawRate;
+    uint8_t flag = (DJISDK::VERTICAL_VELOCITY   |
+                    DJISDK::HORIZONTAL_VELOCITY |
+                    DJISDK::YAW_RATE            |
+                    DJISDK::HORIZONTAL_GROUND   |
+                    DJISDK::STABLE_ENABLE);
+    controlVelYawRate.axes.push_back(vel_x);
+    controlVelYawRate.axes.push_back(vel_y);
+    controlVelYawRate.axes.push_back(vel_z);
+    controlVelYawRate.axes.push_back(vel_yaw);
+    controlVelYawRate.axes.push_back(flag);
+    flight_control_pub_.publish(controlVelYawRate);
+  }
+
   bool DjiInterface::obtainControl(){ // from demo_local_position_control::obtain_control
     dji_sdk::SDKControlAuthority authority;
     authority.request.control_enable=1;
@@ -131,6 +164,15 @@ namespace dji_interface{
     deltaNed.y = deltaLat * deg2rad * C_EARTH;
     deltaNed.x = deltaLon * deg2rad * C_EARTH * cos(deg2rad*target.latitude);
     deltaNed.z = target.altitude - origin.altitude;
+  }
+
+  geometry_msgs::Vector3 DjiInterface::toEulerAngle(geometry_msgs::Quaternion quat)
+  {
+    geometry_msgs::Vector3 ans;
+
+    tf::Matrix3x3 R_FLU2ENU(tf::Quaternion(quat.x, quat.y, quat.z, quat.w));
+    R_FLU2ENU.getRPY(ans.x, ans.y, ans.z);
+    return ans;
   }
 
   bool DjiInterface::setLocalPosition(){ // from demo_local_position_control::set_local_position
@@ -175,9 +217,15 @@ namespace dji_interface{
 
   void DjiInterface::localPositionCallback(const geometry_msgs::PointStamped::ConstPtr& msg){
     current_local_position_ = *msg;
+    current_local_position_update_ = true;
   }
 
   void DjiInterface::gpsHealthCallback(const std_msgs::UInt8::ConstPtr& msg){
     current_gps_health_ = msg->data;
+  }
+
+  void DjiInterface::attitudeCallback(const geometry_msgs::QuaternionStamped::ConstPtr& msg)
+  {
+    current_atti_ = msg->quaternion;
   }
 }

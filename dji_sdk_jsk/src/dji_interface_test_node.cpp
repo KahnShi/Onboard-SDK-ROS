@@ -42,8 +42,10 @@ int main(int argc, char **argv)
   ros::NodeHandle nh;
   ros::NodeHandle nh_private("~");
   DjiMotion dji_motion(nh, nh_private);
-  dji_motion.takeOff();
-
+  if (dji_motion.takeOff())
+    // if (dji_motion.connect())
+    dji_motion.setRelativeLocalTarget(10, 5, 5, M_PI); // test
+  
   ros::spin();
   return 0;
 }

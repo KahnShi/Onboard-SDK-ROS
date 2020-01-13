@@ -40,6 +40,10 @@
 #include <std_msgs/UInt8.h>
 #include <geometry_msgs/PointStamped.h>
 #include <geometry_msgs/Vector3.h>
+#include <geometry_msgs/QuaternionStamped.h>
+#include <sensor_msgs/Joy.h>
+
+#include <tf/tf.h>
 
 //DJI SDK includes
 #include <dji_sdk/dji_sdk.h>
@@ -58,10 +62,17 @@ namespace dji_interface{
     DjiInterface(ros::NodeHandle nh, ros::NodeHandle nhp);
     bool connectM100();
     bool M100TakeOff();
+    void velocityControl(double vel_x, double vel_y, double vel_z, double vel_yaw);
     sensor_msgs::NavSatFix current_gps_position_;
     uint8_t flight_status_;
     uint8_t current_gps_health_;
     geometry_msgs::PointStamped current_local_position_;
+    bool current_local_position_update_;
+    geometry_msgs::Quaternion current_atti_;
+    void localOffsetFromGpsOffset(geometry_msgs::Vector3&  deltaNed,
+                                  sensor_msgs::NavSatFix& target,
+                                  sensor_msgs::NavSatFix& origin);
+    geometry_msgs::Vector3 toEulerAngle(geometry_msgs::Quaternion quat);
 
   private:
     ros::NodeHandle nh_;
@@ -71,6 +82,9 @@ namespace dji_interface{
     ros::Subscriber gps_health_sub_;
     ros::Subscriber flight_status_sub_;
     ros::Subscriber local_position_sub_;
+    ros::Subscriber attitude_sub_;
+
+    ros::Publisher flight_control_pub_;
 
     ros::ServiceClient sdk_ctrl_authority_srv_;
     ros::ServiceClient set_local_pos_reference_srv_;
@@ -81,13 +95,11 @@ namespace dji_interface{
     bool setLocalPosition();
     bool isM100();
     bool DjiTaskControl(int task);
-    void localOffsetFromGpsOffset(geometry_msgs::Vector3&  deltaNed,
-                                  sensor_msgs::NavSatFix& target,
-                                  sensor_msgs::NavSatFix& origin);
 
     void gpsPositionCallback(const sensor_msgs::NavSatFix::ConstPtr& msg);
     void gpsHealthCallback(const std_msgs::UInt8::ConstPtr& msg);
     void flightStatusCallback(const std_msgs::UInt8::ConstPtr& msg);
     void localPositionCallback(const geometry_msgs::PointStamped::ConstPtr& msg);
+    void attitudeCallback(const geometry_msgs::QuaternionStamped::ConstPtr& msg);
   };
 }

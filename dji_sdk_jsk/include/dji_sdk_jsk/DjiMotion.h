@@ -38,19 +38,50 @@
 #include <dji_sdk_jsk/DjiInterface.h>
 
 namespace dji_interface{
+#define NO_TASK 0
+#define TRACKING 1
+#define POS 0
+#define POS_VEL 1
   class DjiMotion{
   public:
     DjiMotion(ros::NodeHandle nh, ros::NodeHandle nhp);
+    int motion_state_;
+    int command_mode_;
+    std::vector<double> local_target_position_;
+    std::vector<double> target_velocity_;
+    double target_yaw_;
+    double max_vel_xy_;
+    double max_vel_z_;
+    double max_vel_yaw_;
+    double pos_p_gains_;
+    double yaw_p_gains_;
+    double pos_task_pos_thre_;
+    double pos_task_yaw_thre_;
+    int pos_task_in_bound_cnt_;
+
+    bool connect();
     bool takeOff();
+    void setRelativeLocalTarget(double dx, double dy, double dz, double yaw);
+    void setLocalTarget(double x, double y, double z, double yaw);
+    void setGpsTarget(sensor_msgs::NavSatFix& target, double yaw);
+    void setVelocityTarget(double vx, double vy, double vz, double vyaw);
+    void setMaxVelocity(double max_vel_xy, double max_vel_z, double nax_vel_yaw);
 
   private:
     ros::NodeHandle nh_;
     ros::NodeHandle nhp_;
 
+    ros::Timer control_timer_;
+    double control_timer_freq_;
+
     DjiInterface* dji_interface_;
+
+    void rangeCheck(double& value, double max_val);
 
     // ros::Subscriber gps_position_sub_;
 
     // void localPositionCallback(const geometry_msgs::PointStamped::ConstPtr& msg);
+
+    void controlTimercallback(const ros::TimerEvent&);
   };
 }
