@@ -52,6 +52,14 @@
 #include <dji_sdk/QueryDroneVersion.h>
 #include <dji_sdk/SetLocalPosRef.h>
 
+/* linear algebra */
+#include <math.h>
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Dense>
+#include <eigen3/Eigen/LU>
+#include <eigen3/Eigen/Geometry>
+#include <eigen3/Eigen/Eigenvalues>
+
 namespace dji_interface{
 #define C_EARTH (double)6378137.0
 #define C_PI (double)3.141592653589793

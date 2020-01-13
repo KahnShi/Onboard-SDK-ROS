@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+  <node pkg="dji_sdk_jsk" type="dji_interface_test_node" name="dji_interface_test_node" output="screen" >
+    <param name="line_motion_vel_x"  value="3.0"/>
+    <param name="line_motion_vel_y"  value="0.0"/>
+    <param name="eight_motion_vel"  value="4.0"/>
+    <param name="eight_motion_radius"  value="16.0"/>
+    <param name="eight_motion_cross_ang_deg"  value="45.0"/>
+    <param name="eight_motion_p_gain"  value="1.0"/>
+    <param name="eight_motion_i_gain"  value="0.5"/>
+  </node>
+</launch>

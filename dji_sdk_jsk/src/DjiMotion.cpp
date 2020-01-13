@@ -46,8 +46,6 @@ namespace dji_interface{
     for (int i = 0; i < 3; ++i) target_velocity_.push_back(0.0);
     pos_task_in_bound_cnt_ = 0;
 
-    // local_position_sub_ = nh_.subscribe("dji_sdk/local_position", 10, &DjiMotion::localPositionCallback, this, ros::TransportHints().tcpNoDelay());
-
     dji_interface_ = new DjiInterface(nh_, nhp_);
     ros::Time start_time = ros::Time::now();
     while (ros::Time::now() - start_time < ros::Duration(1.0)){
@@ -150,8 +148,12 @@ namespace dji_interface{
     setRelativeLocalTarget(deltaNed.x, deltaNed.y, deltaNed.z, yaw);
   }
 
+  void DjiMotion::setLocalTarget(double x, double y, double z){
+    setLocalTarget(x, y, z, (dji_interface_->toEulerAngle(dji_interface_->current_atti_)).z);
+  }
+
   void DjiMotion::setLocalTarget(double x, double y, double z, double yaw){
-    ROS_INFO("setLocalTarget: %f, %f, %f, %f", x, y, z, yaw);
+    // ROS_INFO("setLocalTarget: %f, %f, %f, %f", x, y, z, yaw);
     local_target_position_[0] = x;
     local_target_position_[1] = y;
     local_target_position_[2] = z;
@@ -165,6 +167,12 @@ namespace dji_interface{
     dji_interface_->velocityControl(vx, vy, vz, vyaw);
   }
 
+  void DjiMotion::checkVelocityLimits(Eigen::Vector3d& cmd_vel){
+    rangeCheck(cmd_vel(0), max_vel_xy_);
+    rangeCheck(cmd_vel(1), max_vel_xy_);
+    rangeCheck(cmd_vel(2), max_vel_z_);
+  }
+
   void DjiMotion::rangeCheck(double& value, double max_val){
     if (value > 0 && value > max_val)
       value = max_val;
@@ -176,5 +184,11 @@ namespace dji_interface{
     max_vel_xy_ = max_vel_xy;
     max_vel_z_ = max_vel_z;
     max_vel_yaw_ = max_vel_yaw;
+  }
+
+  Eigen::Vector3d DjiMotion::getLocalPosition(){
+    return Eigen::Vector3d(dji_interface_->current_local_position_.point.x,
+                           dji_interface_->current_local_position_.point.y,
+                           dji_interface_->current_local_position_.point.z);
   }
 }

@@ -22,6 +22,10 @@ find_package(DJIOSDK REQUIRED)
 
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
+find_package(Eigen3 REQUIRED)
+# Eigen requires optimization to get good performance
+# http://eigen.tuxfamily.org/index.php?title=FAQ#Optimization
+
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
@@ -108,10 +112,10 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES dji_sdk_jsk
-#  CATKIN_DEPENDS std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES dji_interface mbzirc_motion
+  CATKIN_DEPENDS std_msgs
+  DEPENDS EIGEN3
 )
 
 ###########
@@ -123,11 +127,15 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
 add_library(dji_interface src/DjiInterface.cpp src/DjiMotion.cpp)
 target_link_libraries(dji_interface ${catkin_LIBRARIES} ${DJIOSDK_LIBRARIES})
+
+add_library(mbzirc_motion src/MbzircMotion.cpp)
+target_link_libraries(mbzirc_motion dji_interface ${catkin_LIBRARIES} ${DJIOSDK_LIBRARIES})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -138,7 +146,7 @@ target_link_libraries(dji_interface ${catkin_LIBRARIES} ${DJIOSDK_LIBRARIES})
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(dji_interface_test_node src/dji_interface_test_node.cpp)
-target_link_libraries(dji_interface_test_node dji_interface ${catkin_LIBRARIES} ${DJIOSDK_LIBRARIES})
+target_link_libraries(dji_interface_test_node dji_interface mbzirc_motion ${catkin_LIBRARIES} ${DJIOSDK_LIBRARIES})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

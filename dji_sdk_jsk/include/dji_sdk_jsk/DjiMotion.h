@@ -62,10 +62,13 @@ namespace dji_interface{
     bool connect();
     bool takeOff();
     void setRelativeLocalTarget(double dx, double dy, double dz, double yaw);
+    void setLocalTarget(double x, double y, double z);
     void setLocalTarget(double x, double y, double z, double yaw);
     void setGpsTarget(sensor_msgs::NavSatFix& target, double yaw);
     void setVelocityTarget(double vx, double vy, double vz, double vyaw);
     void setMaxVelocity(double max_vel_xy, double max_vel_z, double nax_vel_yaw);
+    Eigen::Vector3d getLocalPosition();
+    void checkVelocityLimits(Eigen::Vector3d& cmd_vel);
 
   private:
     ros::NodeHandle nh_;
