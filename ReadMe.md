@@ -1,3 +1,35 @@
+# JSK DJI interface for Task 1
+1. Official launch
+```
+roslaunch dji_sdk sdk.launch
+```
+2. JSK interface launch
+```
+roslaunch dji_sdk_jsk bringup.launch
+```
+3. Task1 motion topic
+```
+rostopic pub -1 /dji_jsk/motion_type std_msgs/UInt8 "data: 1  (line motion)
+rostopic pub -1 /dji_jsk/motion_type std_msgs/UInt8 "data: 2  (eight motion)
+```
+# Note
+1. Change to autonomous mode
+```
+DJI remote controller: F mode
+```
+2. Stop autonomous mode
+```
+DJI remote controller: P mode
+```
+3. Change speed, direction or shape of Task1 motion
+```
+edit dji_sdk_jsk/launch/bringup.launch
+   line_motion_vel_x
+   line_motion_vel_y
+   eight_motion_vel
+   eight_motion_radius
+```
+
 # DJI Onboard SDK ROS 3.8.1
 
 ## Latest Update
@@ -16,7 +48,7 @@ ROS Wiki can be found [here](http://wiki.ros.org/dji_sdk). Please be sure to rea
 
 This chart shows the latest firmware that were available and are supported at the time of 3.7 release.
 
-| Aircraft/FC           | Firmware Package Version | Flight Controller Version | OSDK Branch            | Notes                                                                 |
+| Aircraft/FC           | Firmware Package Version | Flight Controller Version | OSDK Branch            | Notes                                                                 | 
 |-----------------------|--------------------------|---------------------------|------------------------|-----------------------------------------------------------------------|
 | **M210/M210 RTK V2**  | **1.0.0450**             | **3.4.3.31**              | **OSDK 3.8.1**         |                                                                       |
 |                       |                          |                           |                        |                                                                       |
