@@ -1,3 +1,15 @@
+# Compile
+Since the style of dji_sdk, please first use
+```
+catkin_make
+```  
+Then 
+```
+catkin clean
+sudo apt-get install ros-kinetic-nmea-msgs
+catkin build
+```
+
 # JSK DJI interface for Task 1
 1. Official launch
 ```
