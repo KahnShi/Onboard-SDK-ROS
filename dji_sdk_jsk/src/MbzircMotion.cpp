@@ -42,6 +42,9 @@ namespace mbzirc_motion{
 
     motion_type_ = NO_MOTION;
 
+    nhp_.param("waypoint_motion_latitude", waypt_motion_lati_, 35.8953107882);
+    nhp_.param("waypoint_motion_longitude", waypt_motion_long_, 139.944858913);
+    nhp_.param("waypoint_motion_relative_altitude", waypt_motion_relative_alti_, 5.0);
     nhp_.param("line_motion_vel_x", line_motion_vel_x_, 5.0);
     nhp_.param("line_motion_vel_y", line_motion_vel_y_, 0.0);
     nhp_.param("eight_motion_vel", eight_motion_vel_, 5.0);
@@ -71,6 +74,12 @@ namespace mbzirc_motion{
   void MbzircMotion::controlTimercallback(const ros::TimerEvent&){
     if (motion_type_ == NO_MOTION)
       return;
+    else if (motion_type_ == WAYPOINT_MOTION){
+      if (dji_motion_->motion_state_ == NO_TASK){
+        motion_type_ = NO_MOTION;
+        ROS_INFO("[MbzircMotion] Waypoint motion finished.");
+      }
+    }
     else if (motion_type_ == LINE_MOTION){
       dji_motion_->setVelocityTarget(line_motion_vel_x_, line_motion_vel_y_, 0, 0);
     }
@@ -115,7 +124,16 @@ namespace mbzirc_motion{
   }
 
   void MbzircMotion::motionTypeCallback(const std_msgs::UInt8::ConstPtr& msg){
-    if (msg->data == LINE_MOTION){
+    if (msg->data == WAYPOINT_MOTION){
+      motion_type_ = WAYPOINT_MOTION;
+      sensor_msgs::NavSatFix target_gps;
+      target_gps.latitude = waypt_motion_lati_;
+      target_gps.longitude = waypt_motion_long_;
+      target_gps.altitude = waypt_motion_relative_alti_ - dji_motion_->getLocalPosition()[2] + dji_motion_->getGpsPosition()[2];
+      dji_motion_->setGpsTarget(target_gps);
+      ROS_INFO("[MbzircMotion] Waypoint motion starts, please be very careful");
+    }
+    else if (msg->data == LINE_MOTION){
       motion_type_ = LINE_MOTION;
       ROS_INFO("[MbzircMotion] Line motion starts, please stop manually");
     }

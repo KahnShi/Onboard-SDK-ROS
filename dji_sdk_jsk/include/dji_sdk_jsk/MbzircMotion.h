@@ -39,7 +39,8 @@
 
 using namespace dji_interface;
 namespace mbzirc_motion{
-#define NO_MOTION 0
+#define NO_MOTION -1
+#define WAYPOINT_MOTION 0
 #define LINE_MOTION 1
 #define EIGHT_MOTION 2
 #define CLOCK_WISE 1
@@ -55,6 +56,9 @@ namespace mbzirc_motion{
     ros::NodeHandle nhp_;
 
     int motion_type_;
+    double waypt_motion_lati_;
+    double waypt_motion_long_;
+    double waypt_motion_relative_alti_; // start from 0
     double line_motion_vel_x_;
     double line_motion_vel_y_;
     bool eight_motion_init_flag_;

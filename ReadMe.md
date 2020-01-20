@@ -9,8 +9,9 @@ roslaunch dji_sdk_jsk bringup.launch
 ```
 3. Task1 motion topic
 ```
-rostopic pub -1 /dji_jsk/motion_type std_msgs/UInt8 "data: 1  (line motion)
-rostopic pub -1 /dji_jsk/motion_type std_msgs/UInt8 "data: 2  (eight motion)
+rostopic pub -1 /dji_jsk/motion_type std_msgs/UInt8 "data: 0"  (preset gps waypoint)
+rostopic pub -1 /dji_jsk/motion_type std_msgs/UInt8 "data: 1"  (line motion)
+rostopic pub -1 /dji_jsk/motion_type std_msgs/UInt8 "data: 2"  (eight motion)
 ```
 # Note
 1. Change to autonomous mode

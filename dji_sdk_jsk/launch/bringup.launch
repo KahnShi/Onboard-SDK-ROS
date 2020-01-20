@@ -1,9 +1,12 @@
 <?xml version="1.0"?>
 <launch>
   <node pkg="dji_sdk_jsk" type="dji_interface_test_node" name="dji_interface_test_node" output="screen" >
-    <param name="line_motion_vel_x"  value="2.0"/>
-    <param name="line_motion_vel_y"  value="0.0"/>
-    <param name="eight_motion_vel"  value="2.0"/>
+    <param name="waypoint_motion_latitude"  value="35.8954893145"/>
+    <param name="waypoint_motion_longitude"  value="139.944838536"/>
+    <param name="waypoint_motion_relative_altitude"  value="5.0"/>
+    <param name="line_motion_vel_x"  value="0.0"/>
+    <param name="line_motion_vel_y"  value="-2.0"/>
+    <param name="eight_motion_vel"  value="3.0"/>
     <param name="eight_motion_radius"  value="10.0"/>
     <param name="eight_motion_cross_ang_deg"  value="45.0"/>
     <param name="eight_motion_p_gain"  value="1.0"/>

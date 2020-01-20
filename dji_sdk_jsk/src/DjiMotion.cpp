@@ -142,10 +142,26 @@ namespace dji_interface{
                    yaw);
   }
 
+  void DjiMotion::setRelativeLocalTarget(double dx, double dy, double dz){
+    ROS_INFO("setRelativeLocalTarget: %f, %f, %f", dx, dy, dz);
+    ROS_INFO("current local state: %f, %f, %f", dji_interface_->current_local_position_.point.x,
+             dji_interface_->current_local_position_.point.y,
+             dji_interface_->current_local_position_.point.z);
+    setLocalTarget(dji_interface_->current_local_position_.point.x + dx,
+                   dji_interface_->current_local_position_.point.y + dy,
+                   dji_interface_->current_local_position_.point.z + dz);
+  }
+
   void DjiMotion::setGpsTarget(sensor_msgs::NavSatFix& target, double yaw){
     geometry_msgs::Vector3  deltaNed;
     dji_interface_->localOffsetFromGpsOffset(deltaNed, target, dji_interface_->current_gps_position_);
     setRelativeLocalTarget(deltaNed.x, deltaNed.y, deltaNed.z, yaw);
+  }
+
+  void DjiMotion::setGpsTarget(sensor_msgs::NavSatFix& target){
+    geometry_msgs::Vector3  deltaNed;
+    dji_interface_->localOffsetFromGpsOffset(deltaNed, target, dji_interface_->current_gps_position_);
+    setRelativeLocalTarget(deltaNed.x, deltaNed.y, deltaNed.z);
   }
 
   void DjiMotion::setLocalTarget(double x, double y, double z){
@@ -191,4 +207,11 @@ namespace dji_interface{
                            dji_interface_->current_local_position_.point.y,
                            dji_interface_->current_local_position_.point.z);
   }
+
+  Eigen::Vector3d DjiMotion::getGpsPosition(){
+    return Eigen::Vector3d(dji_interface_->current_gps_position_.latitude,
+                           dji_interface_->current_gps_position_.longitude,
+                           dji_interface_->current_gps_position_.altitude);
+  }
+
 }
