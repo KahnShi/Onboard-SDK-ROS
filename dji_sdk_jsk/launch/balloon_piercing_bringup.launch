@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="config_filename" default="balloon_piercing_motion.yaml"/>
+
+  <node pkg="dji_sdk_jsk" type="mbzirc_balloon_piercing_motion_node" name="mbzirc_balloon_piercing_motion_node" output="screen" >
+    <rosparam file="$(find dji_sdk_jsk)/config/$(arg config_filename)" command="load" />
+  </node>
+</launch>
