@@ -45,7 +45,8 @@ namespace mbzirc_motion{
 #define EIGHT_MOTION 2
 #define CLOCK_WISE 1
 #define COUNTER_CLOCK -1
-
+#define NEGATIVE -1
+#define POSITIVE 1
   class MbzircMotion{
   public:
     MbzircMotion(ros::NodeHandle nh, ros::NodeHandle nhp);
@@ -61,8 +62,13 @@ namespace mbzirc_motion{
     double waypt_motion_relative_alti_; // start from 0
     double line_motion_vel_x_;
     double line_motion_vel_y_;
+    double motion_height_min_;
+    double motion_height_max_;
+    double motion_vel_z_;
+    int line_motion_z_direction_;
     bool eight_motion_init_flag_;
     double eight_motion_vel_;
+    int eight_motion_z_direction_;
     Eigen::Vector3d eight_motion_center_position_;
     Eigen::Vector3d eight_motion_left_down_corner_position_;
     Eigen::Vector3d eight_motion_right_down_corner_position_;
@@ -91,5 +97,6 @@ namespace mbzirc_motion{
     void eightMotionCirclePart(Eigen::Vector3d circle_center, double rotation, double start_ang, Eigen::Vector3d& cur_pose, Eigen::Vector3d& cur_vel);
     void motionTypeCallback(const std_msgs::UInt8::ConstPtr& msg);
     void controlTimercallback(const ros::TimerEvent&);
+    int getZaxisVelocityDirection();
   };
 }

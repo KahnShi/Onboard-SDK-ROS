@@ -47,6 +47,17 @@ namespace mbzirc_motion{
     nhp_.param("waypoint_motion_relative_altitude", waypt_motion_relative_alti_, 5.0);
     nhp_.param("line_motion_vel_x", line_motion_vel_x_, 5.0);
     nhp_.param("line_motion_vel_y", line_motion_vel_y_, 0.0);
+    nhp_.param("motion_height_min", motion_height_min_, 5.0);
+    nhp_.param("motion_height_max", motion_height_max_, 15.0);
+    nhp_.param("motion_vel_z", motion_vel_z_, 0.0);
+    if (motion_vel_z_ > 0){
+      line_motion_z_direction_ = POSITIVE;
+      eight_motion_z_direction_ = POSITIVE;
+    }
+    else{
+      line_motion_z_direction_ = NEGATIVE;
+      eight_motion_z_direction_ = NEGATIVE;
+    }
     nhp_.param("eight_motion_vel", eight_motion_vel_, 5.0);
     nhp_.param("eight_motion_radius", eight_motion_radius_, 16.0);
     double eight_motion_cross_ang_deg;
@@ -71,6 +82,23 @@ namespace mbzirc_motion{
     control_timer_ = nh.createTimer(ros::Duration(0.02), &MbzircMotion::controlTimercallback, this);
   }
 
+  int MbzircMotion::getZaxisVelocityDirection(){
+    if (dji_motion_->getLocalPosition()[2] > motion_height_max_){
+      if (motion_type_ == LINE_MOTION) line_motion_z_direction_ = NEGATIVE;
+      else if (motion_type_ == EIGHT_MOTION) eight_motion_z_direction_ = NEGATIVE;
+      return NEGATIVE;}
+    else if (dji_motion_->getLocalPosition()[2] < motion_height_min_){
+      if (motion_type_ == LINE_MOTION) line_motion_z_direction_ = POSITIVE;
+      else if (motion_type_ == EIGHT_MOTION) eight_motion_z_direction_ = POSITIVE;
+      return POSITIVE;}
+    else{
+      if (motion_type_ == LINE_MOTION)
+        return line_motion_z_direction_;
+      else if (motion_type_ == EIGHT_MOTION)
+        return eight_motion_z_direction_;
+    }
+  }
+
   void MbzircMotion::controlTimercallback(const ros::TimerEvent&){
     if (motion_type_ == NO_MOTION)
       return;
@@ -81,7 +109,8 @@ namespace mbzirc_motion{
       }
     }
     else if (motion_type_ == LINE_MOTION){
-      dji_motion_->setVelocityTarget(line_motion_vel_x_, line_motion_vel_y_, 0, 0);
+      dji_motion_->setVelocityTarget(line_motion_vel_x_, line_motion_vel_y_,
+                                     getZaxisVelocityDirection() * fabs(motion_vel_z_), 0);
     }
     else if (motion_type_ == EIGHT_MOTION){
       //
@@ -113,7 +142,8 @@ namespace mbzirc_motion{
       Eigen::Vector3d vel = target_vel + (target_pose - cur_pose) * eight_motion_p_gain_
         + eight_motion_control_I_term_ * eight_motion_i_gain_;
       dji_motion_->checkVelocityLimits(vel);
-      dji_motion_->setVelocityTarget(vel(0), vel(1), vel(2), 0);
+      dji_motion_->setVelocityTarget(vel(0), vel(1),
+                                     getZaxisVelocityDirection() * fabs(motion_vel_z_), 0);
     }
 
     /*
