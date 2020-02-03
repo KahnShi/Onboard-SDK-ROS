@@ -80,6 +80,9 @@ namespace dji_interface{
     void localOffsetFromGpsOffset(geometry_msgs::Vector3&  deltaNed,
                                   sensor_msgs::NavSatFix& target,
                                   sensor_msgs::NavSatFix& origin);
+    void gpsOffsetFromLocalOffset(sensor_msgs::NavSatFix& origin,
+                                  sensor_msgs::NavSatFix& target,
+                                  geometry_msgs::Vector3&  deltaNed);
     geometry_msgs::Vector3 toEulerAngle(geometry_msgs::Quaternion quat);
 
   private:

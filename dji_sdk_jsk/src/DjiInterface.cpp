@@ -166,6 +166,17 @@ namespace dji_interface{
     deltaNed.z = target.altitude - origin.altitude;
   }
 
+  void DjiInterface::gpsOffsetFromLocalOffset(sensor_msgs::NavSatFix& origin,
+                                              sensor_msgs::NavSatFix& target,
+                                              geometry_msgs::Vector3&  deltaNed)
+  {
+    double deltaLat = deltaNed.y / (deg2rad * C_EARTH);
+    double deltaLon = deltaNed.x / (deg2rad * C_EARTH * cos(deg2rad*origin.latitude));
+    target.longitude = origin.longitude + deltaLon;
+    target.latitude = origin.latitude + deltaLat;
+    target.altitude = origin.altitude + deltaNed.z;
+  }
+
   geometry_msgs::Vector3 DjiInterface::toEulerAngle(geometry_msgs::Quaternion quat)
   {
     geometry_msgs::Vector3 ans;
