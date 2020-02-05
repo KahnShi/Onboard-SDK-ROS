@@ -4,15 +4,17 @@
     <param name="waypoint_motion_latitude"  value="35.8954893145"/>
     <param name="waypoint_motion_longitude"  value="139.944838536"/>
     <param name="waypoint_motion_relative_altitude"  value="10.0"/>
+    <param name="max_vel_xy"  value="5.0"/>
+    <param name="max_vel_z"  value="1.0"/>
     <param name="line_motion_vel_x"  value="0.0"/>
     <param name="line_motion_vel_y"  value="-2.0"/>
     <param name="motion_height_min"  value="5.0"/>
     <param name="motion_height_max"  value="15.0"/>
     <param name="motion_vel_z"  value="0.5"/>
     <param name="eight_motion_vel"  value="3.0"/>
-    <param name="eight_motion_radius"  value="10.0"/>
+    <param name="eight_motion_radius"  value="15.0"/>
     <param name="eight_motion_cross_ang_deg"  value="45.0"/>
     <param name="eight_motion_p_gain"  value="1.0"/>
-    <param name="eight_motion_i_gain"  value="0.5"/>
+    <param name="eight_motion_i_gain"  value="0.1"/>
   </node>
 </launch>

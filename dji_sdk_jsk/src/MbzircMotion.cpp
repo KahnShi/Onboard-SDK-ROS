@@ -77,9 +77,9 @@ namespace mbzirc_motion{
       ROS_INFO("[MbzircMotion] M100 is connected");
     }
 
-    nhp_.param("control_timer_freq", control_timer_freq_, 0.01);
+    nhp_.param("control_timer_freq", control_timer_freq_, 0.02);
 
-    control_timer_ = nh.createTimer(ros::Duration(0.02), &MbzircMotion::controlTimercallback, this);
+    control_timer_ = nh.createTimer(ros::Duration(control_timer_freq_), &MbzircMotion::controlTimercallback, this);
   }
 
   int MbzircMotion::getZaxisVelocityDirection(){
