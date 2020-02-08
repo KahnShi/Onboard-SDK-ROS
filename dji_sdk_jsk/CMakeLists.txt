@@ -137,6 +137,9 @@ target_link_libraries(dji_interface ${catkin_LIBRARIES} ${DJIOSDK_LIBRARIES})
 add_library(mbzirc_motion src/MbzircMotion.cpp)
 target_link_libraries(mbzirc_motion dji_interface ${catkin_LIBRARIES} ${DJIOSDK_LIBRARIES})
 
+add_executable(mbzirc_balloon_piercing_motion_node src/MbzircBalloonPiercingMotion.cpp)
+target_link_libraries(mbzirc_balloon_piercing_motion_node dji_interface ${catkin_LIBRARIES} ${DJIOSDK_LIBRARIES})
+
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure

@@ -1,0 +1,9 @@
+area_corner_lati_list : [35.8951876301, 35.895243408, 35.8952816617, 35.8952100321]
+area_corner_long_list : [139.944624697, 139.944577465, 139.944654046, 139.944710732]
+
+relative_alti_list : [4.0, 6.0]
+
+trip_number: 3
+
+takeoff_wait_time: 20
+return_alt: 5
