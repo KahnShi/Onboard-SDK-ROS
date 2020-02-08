@@ -74,7 +74,7 @@ namespace mbzirc_balloon_piercing_motion {
       sensor_msgs::NavSatFix target_gps;
       target_gps.latitude = waypoint_list_[waypoint_list_sp_][0];
       target_gps.longitude = waypoint_list_[waypoint_list_sp_][1];
-      target_gps.altitude = waypoint_list_[waypoint_list_sp_][2];// - dji_motion_->getLocalPosition()[2] + dji_motion_->getGpsPosition()[2];
+      target_gps.altitude = waypoint_list_[waypoint_list_sp_][2] - dji_motion_->getLocalPosition()[2] + dji_motion_->getGpsPosition()[2];
       dji_motion_->setGpsTarget(target_gps);
 
       waypoint_list_sp_++;
@@ -91,7 +91,7 @@ namespace mbzirc_balloon_piercing_motion {
       sensor_msgs::NavSatFix target_gps;
       target_gps.latitude = initial_gps_position_[0];
       target_gps.longitude = initial_gps_position_[1];
-      target_gps.altitude = return_alt_;
+      target_gps.altitude = return_alt_ - dji_motion_->getLocalPosition()[2] + dji_motion_->getGpsPosition()[2];
       dji_motion_->setGpsTarget(target_gps);
       is_task_start_ = false;
       is_go_home_ = false;
@@ -102,10 +102,7 @@ namespace mbzirc_balloon_piercing_motion {
 
   void MbzircBalloonPiercingMotion::taskStartCallback(const std_msgs::Empty::ConstPtr& msg){
     initial_gps_position_ = dji_motion_->getGpsPosition();
-    if (!dji_motion_->takeOff()) {
-      is_task_start_ = false;
-      ROS_INFO("[MbzircBalloonPiercingMotion] takeoff failed");
-    }
+    dji_motion_->takeOff();
     ros::Duration(takeoff_wait_time_).sleep();
 
     is_task_start_ = true;
