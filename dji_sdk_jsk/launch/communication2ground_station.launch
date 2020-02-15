@@ -1,0 +1,19 @@
+<launch>
+  <arg name="GROUND_STATION_IP" default="192.168.1.10" />
+  <arg name="UAV_IP" default="$(env ROS_IP)" />
+  <arg name="HIGH_PORT1" default="16484" />
+  <arg name="HIGH_PORT2" default="8192" />
+  <arg name="LOW_PORT" default="1024" />
+  <arg name="image_pub_throttle_rate" default="5" />
+
+  ### UAV to GroundStation
+  <node pkg="jsk_network_tools" type="silverhammer_highspeed_streamer.py" name="highspeed_streamer" >
+    <param name="message" value="dji_sdk_jsk/FC2OCSData" />
+    <param name="to_ip" value="$(arg GROUND_STATION_IP)" />
+    <param name="to_port" value="$(arg HIGH_PORT1)" />
+    <param name="send_rate" value="$(arg image_pub_throttle_rate)" />
+    <param name="bandwidth" value="50000000" /> <!-- too big? 2000000 is normal? -->
+    <param name="packet_size" value="1000" />
+  </node>
+
+</launch>

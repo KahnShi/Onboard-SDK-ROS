@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="image_pub_throttle_rate" default="10.0" />
+  <arg name="ground_station" default="false" />
+  <arg name="ground_station_ip" default="192.168.1.142" />
+
+  ########### camera ###########
+  <include file="$(find dji_sdk_jsk)/launch/usb_cam.launch" >
+  </include>
+
+  ### communication to ground station
+  <group if="$(arg ground_station)">
+    <include file="$(find dji_sdk_jsk)/launch/communication2ground_station.launch">
+      <arg name="GROUND_STATION_IP" value="$(arg ground_station_ip)" />
+      <arg name="image_pub_throttle_rate" value="$(arg image_pub_throttle_rate)" />
+    </include>
+  </group>
+</launch>

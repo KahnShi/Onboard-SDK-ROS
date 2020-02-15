@@ -1,0 +1,1 @@
+sensor_msgs/CompressedImage camera__image_raw__compressed

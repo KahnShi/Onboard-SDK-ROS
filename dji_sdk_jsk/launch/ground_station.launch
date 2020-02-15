@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="GROUND_STATION_IP" default="$(env ROS_IP)" />
+  <arg name="UAV_IP" default="192.168.1.108" />
+  <arg name="HIGH_PORT1" default="16484" />
+  <arg name="HIGH_PORT2" default="8192" />
+  <arg name="LOW_PORT" default="1024" />
+
+  ### UAV to GroundStation
+  <node pkg="jsk_network_tools" type="silverhammer_highspeed_receiver.py" name="receiver">
+    <param name="message" value="dji_sdk_jsk/FC2OCSData" />
+    <param name="receive_ip" value="$(arg GROUND_STATION_IP)" />
+    <param name="receive_port" value="$(arg HIGH_PORT1)" />
+    <param name="topic_prefix" value="" />
+  </node>
+
+</launch>
