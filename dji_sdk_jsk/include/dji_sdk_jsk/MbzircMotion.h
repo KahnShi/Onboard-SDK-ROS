@@ -84,6 +84,7 @@ namespace mbzirc_motion{
     Eigen::Vector3d eight_motion_control_I_term_;
     double eight_motion_p_gain_;
     double eight_motion_i_gain_;
+    double eight_motion_d_gain_;
 
     ros::Timer control_timer_;
     double control_timer_freq_;

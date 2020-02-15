@@ -50,6 +50,7 @@ namespace dji_interface{
     flight_status_sub_ = nh_.subscribe("/dji_sdk/flight_status", 10, &DjiInterface::flightStatusCallback, this, ros::TransportHints().tcpNoDelay());
     local_position_sub_ = nh_.subscribe("/dji_sdk/local_position", 10, &DjiInterface::localPositionCallback, this, ros::TransportHints().tcpNoDelay());
     attitude_sub_ = nh_.subscribe("/dji_sdk/attitude", 10, &DjiInterface::attitudeCallback, this, ros::TransportHints().tcpNoDelay());
+    velocity_sub_ = nh_.subscribe("/dji_sdk/velocity", 10, &DjiInterface::velocityCallback, this, ros::TransportHints().tcpNoDelay());
 
     flight_control_pub_ = nh_.advertise<sensor_msgs::Joy>("/dji_sdk/flight_control_setpoint_generic", 10);
 
@@ -238,5 +239,9 @@ namespace dji_interface{
   void DjiInterface::attitudeCallback(const geometry_msgs::QuaternionStamped::ConstPtr& msg)
   {
     current_atti_ = msg->quaternion;
+  }
+
+  void DjiInterface::velocityCallback(const geometry_msgs::Vector3Stamped::ConstPtr& msg){
+    current_velocity_ = *msg;
   }
 }

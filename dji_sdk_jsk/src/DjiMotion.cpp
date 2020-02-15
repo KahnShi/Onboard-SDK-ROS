@@ -214,4 +214,10 @@ namespace dji_interface{
                            dji_interface_->current_gps_position_.altitude);
   }
 
+  Eigen::Vector3d DjiMotion::getVelocity(){
+    return Eigen::Vector3d(dji_interface_->current_velocity_.vector.x,
+                           dji_interface_->current_velocity_.vector.y,
+                           dji_interface_->current_velocity_.vector.z);
+  }
+
 }

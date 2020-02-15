@@ -71,6 +71,7 @@ namespace dji_interface{
     void setMaxVelocity(double max_vel_xy, double max_vel_z, double nax_vel_yaw);
     Eigen::Vector3d getLocalPosition();
     Eigen::Vector3d getGpsPosition();
+    Eigen::Vector3d getVelocity();
     void checkVelocityLimits(Eigen::Vector3d& cmd_vel);
 
   private:

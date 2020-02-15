@@ -41,6 +41,7 @@
 #include <geometry_msgs/PointStamped.h>
 #include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/QuaternionStamped.h>
+#include <geometry_msgs/Vector3Stamped.h>
 #include <sensor_msgs/Joy.h>
 
 #include <tf/tf.h>
@@ -75,6 +76,7 @@ namespace dji_interface{
     uint8_t flight_status_;
     uint8_t current_gps_health_;
     geometry_msgs::PointStamped current_local_position_;
+    geometry_msgs::Vector3Stamped current_velocity_;
     bool current_local_position_update_;
     geometry_msgs::Quaternion current_atti_;
     void localOffsetFromGpsOffset(geometry_msgs::Vector3&  deltaNed,
@@ -94,6 +96,7 @@ namespace dji_interface{
     ros::Subscriber flight_status_sub_;
     ros::Subscriber local_position_sub_;
     ros::Subscriber attitude_sub_;
+    ros::Subscriber velocity_sub_;
 
     ros::Publisher flight_control_pub_;
 
@@ -112,5 +115,6 @@ namespace dji_interface{
     void flightStatusCallback(const std_msgs::UInt8::ConstPtr& msg);
     void localPositionCallback(const geometry_msgs::PointStamped::ConstPtr& msg);
     void attitudeCallback(const geometry_msgs::QuaternionStamped::ConstPtr& msg);
+    void velocityCallback(const geometry_msgs::Vector3Stamped::ConstPtr& msg);
   };
 }

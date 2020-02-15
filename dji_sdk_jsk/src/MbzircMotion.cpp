@@ -65,6 +65,7 @@ namespace mbzirc_motion{
     eight_motion_cross_ang_ = eight_motion_cross_ang_deg / 180.0 * M_PI;
     nhp_.param("eight_motion_p_gain", eight_motion_p_gain_, 0.4);
     nhp_.param("eight_motion_i_gain", eight_motion_i_gain_, 0.1);
+    nhp_.param("eight_motion_d_gain", eight_motion_d_gain_, 0.1);
 
     motion_type_sub_ = nh_.subscribe("/dji_jsk/motion_type", 10, &MbzircMotion::motionTypeCallback, this, ros::TransportHints().tcpNoDelay());
 
@@ -138,9 +139,14 @@ namespace mbzirc_motion{
 
       // pos_vel mode is needed
       Eigen::Vector3d cur_pose = dji_motion_->getLocalPosition();
+      Eigen::Vector3d cur_vel = dji_motion_->getVelocity();
       eight_motion_control_I_term_ += (target_pose - cur_pose) * control_timer_freq_;
       Eigen::Vector3d vel = target_vel + (target_pose - cur_pose) * eight_motion_p_gain_
-        + eight_motion_control_I_term_ * eight_motion_i_gain_;
+        + eight_motion_control_I_term_ * eight_motion_i_gain_
+        + eight_motion_d_gain_ * (target_vel - cur_vel);
+      // test
+      // std::cout << (target_pose - cur_pose).transpose() << "\n";
+      
       dji_motion_->checkVelocityLimits(vel);
       dji_motion_->setVelocityTarget(vel(0), vel(1),
                                      getZaxisVelocityDirection() * fabs(motion_vel_z_), 0);

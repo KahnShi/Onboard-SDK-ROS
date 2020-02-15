@@ -1,20 +1,23 @@
 <?xml version="1.0"?>
 <launch>
   <node pkg="dji_sdk_jsk" type="dji_interface_test_node" name="dji_interface_test_node" output="screen" >
-    <param name="waypoint_motion_latitude"  value="35.8954893145"/>
-    <param name="waypoint_motion_longitude"  value="139.944838536"/>
+    <param name="waypoint_motion_latitude"  value="35.8954462269"/>
+    <param name="waypoint_motion_longitude"  value="139.944900825"/>
+    <!-- <param name="waypoint_motion_latitude"  value="35.8953465908"/> -->
+    <!-- <param name="waypoint_motion_longitude"  value="139.945011576"/> -->
     <param name="waypoint_motion_relative_altitude"  value="10.0"/>
-    <param name="max_vel_xy"  value="5.0"/>
+    <param name="max_vel_xy"  value="8.0"/>
     <param name="max_vel_z"  value="1.0"/>
-    <param name="line_motion_vel_x"  value="0.0"/>
-    <param name="line_motion_vel_y"  value="-2.0"/>
-    <param name="motion_height_min"  value="5.0"/>
-    <param name="motion_height_max"  value="15.0"/>
-    <param name="motion_vel_z"  value="0.5"/>
-    <param name="eight_motion_vel"  value="3.0"/>
-    <param name="eight_motion_radius"  value="15.0"/>
+    <param name="line_motion_vel_x"  value="-2.0"/>
+    <param name="line_motion_vel_y"  value="-1.0"/>
+    <param name="motion_height_min"  value="5"/>
+    <param name="motion_height_max"  value="15"/>
+    <param name="motion_vel_z"  value="0.0"/>
+    <param name="eight_motion_vel"  value="-3.0"/>
+    <param name="eight_motion_radius"  value="-15.0"/>
     <param name="eight_motion_cross_ang_deg"  value="45.0"/>
     <param name="eight_motion_p_gain"  value="1.0"/>
     <param name="eight_motion_i_gain"  value="0.1"/>
+    <param name="eight_motion_d_gain"  value="0.1"/>
   </node>
 </launch>
